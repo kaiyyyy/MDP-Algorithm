@@ -132,32 +132,32 @@ public class SPSelector extends ActionSelector {
 
     @Override
     public String selectActions() {
-	// find the shortest path
-	while (!this.blocks[18][13].found) {
-	    this.findNextTarget();
-	    this.updateEstimate();
-	}
-	// generate coordinates queue
-	int cur_height = 18;
-	int cur_width = 13;
-	int pre_height, pre_width;
-
-	System.out.println("Here");
-
-	CoordinatesQueue cQueue = new CoordinatesQueue();
-	cQueue.addFront(cur_height, cur_width);
-	while ((cur_height != 1) && (cur_width != 1)) {
-	    pre_height = blocks[cur_height][cur_width].pre_height;
-	    pre_width = blocks[cur_height][cur_width].pre_width;
-
-	    cQueue.addFront(pre_height, pre_width);
-
-	    cur_height = pre_height;
-	    cur_width = pre_width;
-	}
-
-	MovementSequence mQueue = cQueue.findMovements(navigator.getCurDirection());
-	return mQueue.outputMovements();
+		// find the shortest path
+		while (!this.blocks[18][13].found) {
+		    this.findNextTarget();
+		    this.updateEstimate();
+		}
+		// generate coordinates queue
+		int cur_height = 18;
+		int cur_width = 13;
+		int pre_height, pre_width;
+	
+		System.out.println("Here");
+	
+		CoordinatesQueue cQueue = new CoordinatesQueue();
+		cQueue.addFront(cur_height, cur_width);
+		while ((cur_height != 1) && (cur_width != 1)) {
+		    pre_height = blocks[cur_height][cur_width].pre_height;
+		    pre_width = blocks[cur_height][cur_width].pre_width;
+	
+		    cQueue.addFront(pre_height, pre_width);
+	
+		    cur_height = pre_height;
+		    cur_width = pre_width;
+		}
+	
+		MovementSequence mQueue = cQueue.findMovements(navigator.getCurDirection());
+		return mQueue.outputMovements();
 
     }
 

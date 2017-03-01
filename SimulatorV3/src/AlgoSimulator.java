@@ -437,8 +437,8 @@ public class AlgoSimulator {
 		shortestPathButton.setEnabled(false);
 		shortestPathButton.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				
-				//System.out.println(navi.getHeight() + " " + navi.getWidth());
+				tExplore.stop();
+				System.out.println(navi.getHeight() + " " + navi.getWidth());
 				ActionManager Sp = new ActionManager(map ,navi);
 				Sp.solveMaze();
 				
