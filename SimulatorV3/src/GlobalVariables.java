@@ -6,7 +6,7 @@ public class GlobalVariables {
 	public static String MD1String = "";
 	public static String MD2String = "";
 	public static final Color EXPLORED = new Color(255,123,123);
-	
+	public static int simulate = 0;
 	public static void earlyCompletion(Arena map, double percentage) {
 		int num = 0;
 		for (int i = 19; i >= 0; i--) {

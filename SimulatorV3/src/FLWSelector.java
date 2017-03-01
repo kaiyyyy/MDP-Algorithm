@@ -57,50 +57,62 @@ public class FLWSelector extends ActionSelector {
 		    //update navigator information
 		    //super.navigator.showBot(arena, navigator);
 		    super.navigator.turnLeft();
-		    GlobalVariables.earlyCompletion(arena, GlobalVariables.percentage);
-		    try {
-				Thread.currentThread();
-				Thread.sleep(GlobalVariables.time);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		    if(GlobalVariables.simulate == 1)
+		    {
+			    GlobalVariables.earlyCompletion(arena, GlobalVariables.percentage);
+			    try {
+					Thread.currentThread();
+					Thread.sleep(GlobalVariables.time);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
 		    //super.navigator.showBot(arena, navigator);
 		    super.navigator.move();
-		    GlobalVariables.earlyCompletion(arena, GlobalVariables.percentage);
-		    try {
-				Thread.currentThread();
-				Thread.sleep(GlobalVariables.time);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		    // generate return for the robot
+		    if(GlobalVariables.simulate == 1)
+			{
+			    GlobalVariables.earlyCompletion(arena, GlobalVariables.percentage);
+			    try {
+					Thread.currentThread();
+					Thread.sleep(GlobalVariables.time);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			    // generate return for the robot
+		    }
 		    return "turn left and move forward for one block";
 		} else {
 		    if (movable[0] == true) {
 		    //super.navigator.showBot(arena, navigator);
 			super.navigator.move();
-			GlobalVariables.earlyCompletion(arena, GlobalVariables.percentage);
-				try {
-					Thread.currentThread();
-					Thread.sleep(GlobalVariables.time);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			if(GlobalVariables.simulate == 1)
+		    {
+				GlobalVariables.earlyCompletion(arena, GlobalVariables.percentage);
+					try {
+						Thread.currentThread();
+						Thread.sleep(GlobalVariables.time);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		    }
 			return "move forward";
 		    } else {
 		    //super.navigator.showBot(arena, navigator);
 			super.navigator.turnRight();
-			GlobalVariables.earlyCompletion(arena, GlobalVariables.percentage);
-				try {
-					Thread.currentThread();
-					Thread.sleep(GlobalVariables.time);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			if(GlobalVariables.simulate == 1)
+		    {
+				GlobalVariables.earlyCompletion(arena, GlobalVariables.percentage);
+					try {
+						Thread.currentThread();
+						Thread.sleep(GlobalVariables.time);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		    }
 			return "turn right";
 		    }
 		}

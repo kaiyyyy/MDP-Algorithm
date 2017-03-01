@@ -187,28 +187,33 @@ public class Arena extends JPanel{
 	}
 
     public void printMap(int height, int width) {
-    	
-    	updateArena(height, width);
-		/*for (int row = 19; row >= 0; row--) {
-		    for (int col = 0; col < 15; col++) {
-			if ((col <= width + 1) && (col >= width - 1) && (row >= height - 1) && (row <= height + 1)) {
-			    System.out.print("n|");
-			} else {
-			    switch (map[row][col]) {
-			    case BlockState.BLOCKED:
-				System.out.print("b ");
-				break;
-			    case BlockState.REACHABLE:
-				System.out.print("r ");
-				break;
-			    case BlockState.UNEXPLORED:
-				System.out.print("? ");
-				break;
+    	if(GlobalVariables.simulate == 1)
+    	{
+    		updateArena(height, width);
+    	}
+    	else
+    	{
+			for (int row = 19; row >= 0; row--) {
+			    for (int col = 0; col < 15; col++) {
+				if ((col <= width + 1) && (col >= width - 1) && (row >= height - 1) && (row <= height + 1)) {
+				    System.out.print("n|");
+				} else {
+				    switch (map[row][col]) {
+				    case BlockState.BLOCKED:
+					System.out.print("b ");
+					break;
+				    case BlockState.REACHABLE:
+					System.out.print("r ");
+					break;
+				    case BlockState.UNEXPLORED:
+					System.out.print("? ");
+					break;
+				    }
+				}
 			    }
+			    System.out.println();
 			}
-		    }
-		    System.out.println();
-		}*/
+    	}
     }
     
     /*

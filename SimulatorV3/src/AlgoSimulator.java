@@ -49,6 +49,7 @@ public class AlgoSimulator {
 	public static final Color BOTHEADCENTER = new Color(123,255,123);
 	public static final Color BOTBODY = Color.ORANGE;
 	private static ActionManager explore;
+	static Navigator navi = null;
 	
 	public static Timer time;
 	static Thread tExplore;
@@ -338,10 +339,9 @@ public class AlgoSimulator {
 				steps.setEnabled(false);
 				stopAll.setEnabled(true);
 				timeField.setEnabled(false);
-
+				GlobalVariables.simulate = 1;
 				GlobalVariables.percentage = Double.parseDouble(percentObstacles.getText())/100;
 				GlobalVariables.time =  (1000 / Integer.parseInt(steps.getText()));
-				Navigator navi = null;
 				navi = new Navigator();
 				ActionManager Am = new ActionManager(map, navi);
 				
@@ -437,6 +437,10 @@ public class AlgoSimulator {
 		shortestPathButton.setEnabled(false);
 		shortestPathButton.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
+				
+				//System.out.println(navi.getHeight() + " " + navi.getWidth());
+				ActionManager Sp = new ActionManager(map ,navi);
+				Sp.solveMaze();
 				
 			}
 		});

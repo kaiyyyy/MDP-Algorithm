@@ -7,8 +7,8 @@ public class ActionManager implements Runnable{
     private Navigator navigator;
 
     public ActionManager(Arena arena, Navigator navigator) {
-	this.arena = arena;
-	this.navigator = navigator;
+		this.arena = arena;
+		this.navigator = navigator;
     }
     
     public void run()
@@ -30,23 +30,34 @@ public class ActionManager implements Runnable{
 
 	System.out.println("PhaseIComplete*******************");
 
-	this.phaseIINavigate();
+		this.phaseIINavigate();
     }
 
     private void phaseIINavigate() {
-	PhaseIISelector selector = new PhaseIISelector(this.arena, this.navigator);
+		PhaseIISelector selector = new PhaseIISelector(this.arena, this.navigator);
+	
+		while (selector.findNextTarget()) {
+		    System.out.println(selector.selectActions());
+		    selector.rotateAndDetect(4);
+		    arena.printMap(navigator.getHeight(), navigator.getWidth());
+		}
+	
+			System.out.println(selector.returnToOrigin());
+			arena.printMap(navigator.getHeight(), navigator.getWidth());
+			Thread.currentThread().stop();
 
-	while (selector.findNextTarget()) {
-	    System.out.println(selector.selectActions());
-	    selector.rotateAndDetect(4);
-	    arena.printMap(navigator.getHeight(), navigator.getWidth());
-	}
-
-		System.out.println(selector.returnToOrigin());
+    }
+    
+    public void solveMaze(){
+    	PhaseIISelector selector = new PhaseIISelector(this.arena, this.navigator);
+    	while (selector.findNextTarget()) {
+		    System.out.println(selector.selectActions());
+		    selector.rotateAndDetect(4);
+		    arena.printMap(navigator.getHeight(), navigator.getWidth());
+		}
+    	
+    	System.out.println(selector.goToGoal());
 		arena.printMap(navigator.getHeight(), navigator.getWidth());
-		Thread.currentThread().stop();
-		
-
     }
 
     private void shortestPath() {

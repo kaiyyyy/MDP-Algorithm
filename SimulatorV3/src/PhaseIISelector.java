@@ -5,25 +5,25 @@ public class PhaseIISelector extends ActionSelector {
     private int move_direction[][]; // 1 - up | 2 - down | 3 - left | 4 - right
 
     public PhaseIISelector(Arena arena, Navigator navigator) {
-	super(arena, navigator);
-	this.direction = Direction.NORTH;
-	this.target_height = 0;
-	this.target_width = 0;
-	this.move_direction = new int[20][15];
-	for (int row = 0; row < 20; row++) {
-	    for (int col = 0; col < 15; col++) {
-		this.move_direction[row][col] = 0;
-	    }
-	}
+		super(arena, navigator);
+		this.direction = Direction.NORTH;
+		this.target_height = 0;
+		this.target_width = 0;
+		this.move_direction = new int[20][15];
+		for (int row = 0; row < 20; row++) {
+		    for (int col = 0; col < 15; col++) {
+			this.move_direction[row][col] = 0;
+		    }
+		}
     }
 
     // Use breadth-first-search to find the nearest unexplored block
     public boolean findNextTarget() {
-	boolean[][] visited = new boolean[20][15];
-	for (int row = 0; row < 19; row++) {
-	    for (int col = 0; col < 15; col++) {
-		visited[row][col] = false;
-	    }
+		boolean[][] visited = new boolean[20][15];
+		for (int row = 0; row < 19; row++) {
+		    for (int col = 0; col < 15; col++) {
+			visited[row][col] = false;
+		    }
 	}
 
 	int cur_height = super.navigator.getHeight();
@@ -112,22 +112,22 @@ public class PhaseIISelector extends ActionSelector {
 	    int d = this.move_direction[cur_height][cur_width];
 
 	    switch (d) {
-	    case Direction.NORTH: // moved up
-		queue.addFront(cur_height - 1, cur_width);
-		cur_height--;
-		break;
-	    case Direction.SOUTH: // moved down
-		queue.addFront(cur_height + 1, cur_width);
-		cur_height++;
-		break;
-	    case Direction.WEST: // moved left
-		queue.addFront(cur_height, cur_width + 1);
-		cur_width++;
-		break;
-	    case Direction.EAST: // moved right
-		queue.addFront(cur_height, cur_width - 1);
-		cur_width--;
-		break;
+		    case Direction.NORTH: // moved up
+				queue.addFront(cur_height - 1, cur_width);
+				cur_height--;
+				break;
+		    case Direction.SOUTH: // moved down
+				queue.addFront(cur_height + 1, cur_width);
+				cur_height++;
+				break;
+		    case Direction.WEST: // moved left
+				queue.addFront(cur_height, cur_width + 1);
+				cur_width++;
+				break;
+		    case Direction.EAST: // moved right
+				queue.addFront(cur_height, cur_width - 1);
+				cur_width--;
+				break;
 	    }
 
 	}
@@ -146,41 +146,53 @@ public class PhaseIISelector extends ActionSelector {
 	    case Movement.MOVE:
 	    	//super.navigator.showBot(arena, navigator);
 	    	navigator.move();
-	    	arena.printMap(navigator.getHeight(), navigator.getWidth());
+	    	if(GlobalVariables.simulate == 1)
+		    {
+	    		arena.printMap(navigator.getHeight(), navigator.getWidth());
+		    
 	    	
-		try {
-			Thread.currentThread();
-			Thread.sleep(GlobalVariables.time);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				try {
+					Thread.currentThread();
+					Thread.sleep(GlobalVariables.time);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
 		break;
 	    case Movement.TURN_LEFT:
 	    	//super.navigator.showBot(arena, navigator);
 	    	navigator.turnLeft();
-	    	arena.printMap(navigator.getHeight(), navigator.getWidth());
+	    	if(GlobalVariables.simulate == 1)
+		    {
+	    		arena.printMap(navigator.getHeight(), navigator.getWidth());
+		    
 	    	
-		try {
-			Thread.currentThread();
-			Thread.sleep(GlobalVariables.time);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				try {
+					Thread.currentThread();
+					Thread.sleep(GlobalVariables.time);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
 		break;
 	    case Movement.TURN_RIGHT:
 	    	//super.navigator.showBot(arena, navigator);
 	    	navigator.turnRight();
-	    	arena.printMap(navigator.getHeight(), navigator.getWidth());
+	    	if(GlobalVariables.simulate == 1)
+		    {
+	    		arena.printMap(navigator.getHeight(), navigator.getWidth());
+		    
 	    	
-		try {
-			Thread.currentThread();
-			Thread.sleep(GlobalVariables.time);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				try {
+					Thread.currentThread();
+					Thread.sleep(GlobalVariables.time);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
 		break;
 	    }
 	    super.readAndUpdate();
@@ -194,20 +206,24 @@ public class PhaseIISelector extends ActionSelector {
 	if (repetition == 0)
 	    return;
 	else {
-	    super.readAndUpdate();
-	    //super.navigator.showBot(arena, navigator);
-	    navigator.turnRight();
-	    arena.printMap(navigator.getHeight(), navigator.getWidth());
-		
-	    try {
-			Thread.currentThread();
-			Thread.sleep(GlobalVariables.time);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    super.readAndUpdate();
+		    //super.navigator.showBot(arena, navigator);
+		    navigator.turnRight();
+		    if(GlobalVariables.simulate == 1)
+		    {
+			    	arena.printMap(navigator.getHeight(), navigator.getWidth());
+			    
+				
+			    try {
+					Thread.currentThread();
+					Thread.sleep(GlobalVariables.time);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		    rotateAndDetect(repetition - 1);
 		}
-	    rotateAndDetect(repetition - 1);
-	}
     }
 
     public String returnToOrigin() {
@@ -215,6 +231,12 @@ public class PhaseIISelector extends ActionSelector {
 		this.target_width = 1;
 
 		return this.selectActions();
+    }
+    
+    public String goToGoal() {
+    	this.target_height = 18;
+    	this.target_width = 14;
+    	return this.selectActions();
     }
 
 }
