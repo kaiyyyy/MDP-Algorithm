@@ -44,25 +44,21 @@ public class ActionManager implements Runnable{
 	
 			System.out.println(selector.returnToOrigin());
 			arena.printMap(navigator.getHeight(), navigator.getWidth());
-			Thread.currentThread().stop();
+			
+			if(GlobalVariables.simulate == 1)
+			{
+				Thread.currentThread().stop();
+			}
 
     }
     
     public void solveMaze(){
     	PhaseIISelector selector = new PhaseIISelector(this.arena, this.navigator);
-    	while (selector.findNextTarget()) {
-		    System.out.println(selector.selectActions());
-		    selector.rotateAndDetect(4);
-		    arena.printMap(navigator.getHeight(), navigator.getWidth());
-		}
-    	
     	System.out.println(selector.goToGoal());
-		arena.printMap(navigator.getHeight(), navigator.getWidth());
     }
 
     private void shortestPath() {
 		SPSelector selector = new SPSelector(this.arena, this.navigator);
-	
 		selector.selectActions();
     }
 }
