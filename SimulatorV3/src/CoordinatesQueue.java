@@ -1,3 +1,5 @@
+import java.awt.Color;
+
 class CoordinatesNode {
     private int height;
     private int width;
@@ -110,6 +112,10 @@ public class CoordinatesQueue {
 		CoordinatesNode cur_node = this.dequeue();
 		CoordinatesNode next_node = cur_node.next;
 		System.out.println(cur_node.getHeight() + " " + cur_node.getWidth());
+		if(GlobalVariables.simulate == 1 && GlobalVariables.shortestrun == 1)
+		{
+			GlobalVariables.showMappingofPath.grids[cur_node.getHeight()][cur_node.getWidth()].setBackground(Color.MAGENTA);
+		}
 
 		// Move to North
 		if ((next_node.getHeight() - cur_node.getHeight()) == 1) {
