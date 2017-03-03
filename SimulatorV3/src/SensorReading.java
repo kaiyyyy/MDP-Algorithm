@@ -66,8 +66,13 @@ public class SensorReading {
 					if (!arena.withinRange(cur_height + 3, cur_width - 1 + index)
 							|| (this.arena.sensorGetState(cur_height + 3, cur_width - 1 + index) == BlockState.BLOCKED))
 						front[index] = 2;
-					else
-						front[index] = -1;
+					else {
+						if (!arena.withinRange(cur_height + 4, cur_width - 1 + index) || (this.arena
+								.sensorGetState(cur_height + 4, cur_width - 1 + index) == BlockState.BLOCKED))
+							front[index] = 3;
+						else
+							front[index] = -1;
+					}
 				}
 				break;
 			case Direction.SOUTH:
@@ -78,8 +83,14 @@ public class SensorReading {
 					if (!arena.withinRange(cur_height - 3, cur_width + 1 - index)
 							|| (this.arena.sensorGetState(cur_height - 3, cur_width + 1 - index) == BlockState.BLOCKED))
 						front[index] = 2;
-					else
-						front[index] = -1;
+					else {
+						if (!arena.withinRange(cur_height - 4, cur_width + 1 - index) || (this.arena
+								.sensorGetState(cur_height - 4, cur_width + 1 - index) == BlockState.BLOCKED))
+							front[index] = 3;
+						else
+							front[index] = -1;
+					}
+
 				}
 				break;
 			case Direction.WEST:
@@ -90,8 +101,13 @@ public class SensorReading {
 					if (!arena.withinRange(cur_height - 1 + index, cur_width - 3)
 							|| (this.arena.sensorGetState(cur_height - 1 + index, cur_width - 3) == BlockState.BLOCKED))
 						front[index] = 2;
-					else
-						front[index] = -1;
+					else {
+						if (!arena.withinRange(cur_height - 1 + index, cur_width - 4) || (this.arena
+								.sensorGetState(cur_height - 1 + index, cur_width - 4) == BlockState.BLOCKED))
+							front[index] = 3;
+						else
+							front[index] = -1;
+					}
 				}
 				break;
 			case Direction.EAST:
@@ -102,8 +118,13 @@ public class SensorReading {
 					if (!arena.withinRange(cur_height + 1 - index, cur_width + 3)
 							|| (this.arena.sensorGetState(cur_height + 1 - index, cur_width + 3) == BlockState.BLOCKED))
 						front[index] = 2;
-					else
-						front[index] = -1;
+					else {
+						if (!arena.withinRange(cur_height + 1 - index, cur_width + 4) || (this.arena
+								.sensorGetState(cur_height + 1 - index, cur_width + 4) == BlockState.BLOCKED))
+							front[index] = 3;
+						else
+							front[index] = -1;
+					}
 				}
 				break;
 			}

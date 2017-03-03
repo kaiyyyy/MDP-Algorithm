@@ -50,21 +50,21 @@ public class SPSelector extends ActionSelector {
     }
 
     private void findNextTarget() {
-	this.cur_shortest_estimate = 99999;
-	for (int height = 18; height >= 1; height--) {
-	    for (int width = 13; width >= 1; width--) {
-		if (!this.blocks[height][width].found) {
-		    if (this.cur_shortest_estimate > this.blocks[height][width].estimate) {
-			this.cur_shortest_estimate = this.blocks[height][width].estimate;
-			this.target_height = height;
-			this.target_width = width;
+		this.cur_shortest_estimate = 99999;
+		for (int height = 18; height >= 1; height--) {
+		    for (int width = 13; width >= 1; width--) {
+				if (!this.blocks[height][width].found) {
+				    if (this.cur_shortest_estimate > this.blocks[height][width].estimate) {
+					this.cur_shortest_estimate = this.blocks[height][width].estimate;
+					this.target_height = height;
+					this.target_width = width;
+				    }
+				}
 		    }
 		}
-	    }
-	}
-	this.blocks[target_height][target_width].found = true;
-	System.out.println("( " + this.target_height + " , " + this.target_width + " )");
-
+		
+		this.blocks[target_height][target_width].found = true;
+	
     }
 
     private void updateEstimate() {
@@ -74,7 +74,8 @@ public class SPSelector extends ActionSelector {
 		&& arena.isMovable(target_height, target_width - 1)) {
 	    int r_turns = Direction.WEST - blocks[target_height][target_width].cur_direction;
 	    int l_turns = 4 - r_turns;
-	    double l_cost = Math.min(l_turns * super.turn_left_cost, r_turns * super.turn_right_cost) + super.move_cost;
+	    double l_cost = Math.min(l_turns * super.turn_left_cost, r_turns * super.turn_right_cost) + super.move_cost
+		    + this.blocks[target_height][target_width].estimate;
 	    if (l_cost < this.blocks[target_height][target_width - 1].estimate) {
 		this.blocks[target_height][target_width - 1].estimate = l_cost;
 		this.blocks[target_height][target_width - 1].cur_direction = Direction.WEST;
@@ -90,7 +91,8 @@ public class SPSelector extends ActionSelector {
 		    ? (Direction.EAST - this.blocks[target_height][target_width].cur_direction)
 		    : (4 + Direction.EAST - this.blocks[target_height][target_width].cur_direction);
 	    int l_turns = 4 - r_turns;
-	    double r_cost = Math.min(l_turns * super.turn_left_cost, r_turns * super.turn_right_cost) + super.move_cost;
+	    double r_cost = Math.min(l_turns * super.turn_left_cost, r_turns * super.turn_right_cost) + super.move_cost
+		    + this.blocks[target_height][target_width].estimate;
 	    if (r_cost < this.blocks[target_height][target_width + 1].estimate) {
 		this.blocks[target_height][target_width + 1].estimate = r_cost;
 		this.blocks[target_height][target_width + 1].cur_direction = Direction.EAST;
@@ -104,7 +106,8 @@ public class SPSelector extends ActionSelector {
 		&& arena.isMovable(target_height + 1, target_width)) {
 	    int r_turns = 4 - (this.blocks[target_height][target_width].cur_direction - Direction.NORTH);
 	    int l_turns = 4 - r_turns;
-	    double u_cost = Math.min(l_turns * super.turn_left_cost, r_turns * super.turn_right_cost) + super.move_cost;
+	    double u_cost = Math.min(l_turns * super.turn_left_cost, r_turns * super.turn_right_cost) + super.move_cost
+		    + this.blocks[target_height][target_width].estimate;
 	    if (u_cost < this.blocks[target_height + 1][target_width].estimate) {
 		this.blocks[target_height + 1][target_width].estimate = u_cost;
 		this.blocks[target_height + 1][target_width].cur_direction = Direction.NORTH;
@@ -120,7 +123,8 @@ public class SPSelector extends ActionSelector {
 		    ? (Direction.SOUTH - this.blocks[target_height - 1][target_width].cur_direction)
 		    : (4 + Direction.SOUTH - this.blocks[target_height - 1][target_width].cur_direction);
 	    int l_turns = 4 - r_turns;
-	    double d_cost = Math.min(l_turns * super.turn_left_cost, r_turns * super.turn_right_cost) + super.move_cost;
+	    double d_cost = Math.min(l_turns * super.turn_left_cost, r_turns * super.turn_right_cost) + super.move_cost
+		    + this.blocks[target_height][target_width].estimate;
 	    if (d_cost < this.blocks[target_height + 1][target_width].estimate) {
 		this.blocks[target_height - 1][target_width].estimate = d_cost;
 		this.blocks[target_height - 1][target_width].cur_direction = Direction.SOUTH;
@@ -132,32 +136,30 @@ public class SPSelector extends ActionSelector {
 
     @Override
     public String selectActions() {
-		// find the shortest path
-		while (!this.blocks[18][13].found) {
-		    this.findNextTarget();
-		    this.updateEstimate();
-		}
-		// generate coordinates queue
-		int cur_height = 18;
-		int cur_width = 13;
-		int pre_height, pre_width;
-	
-		System.out.println("Here");
-	
-		CoordinatesQueue cQueue = new CoordinatesQueue();
-		cQueue.addFront(cur_height, cur_width);
-		while ((cur_height != 1) && (cur_width != 1)) {
-		    pre_height = blocks[cur_height][cur_width].pre_height;
-		    pre_width = blocks[cur_height][cur_width].pre_width;
-	
-		    cQueue.addFront(pre_height, pre_width);
-	
-		    cur_height = pre_height;
-		    cur_width = pre_width;
-		}
-	
-		MovementSequence mQueue = cQueue.findMovements(navigator.getCurDirection());
-		return mQueue.outputMovements();
+	// find the shortest path
+	while (!this.blocks[18][13].found) {
+	    this.findNextTarget();
+	    this.updateEstimate();
+	}
+	// generate coordinates queue
+	int cur_height = 18;
+	int cur_width = 13;
+	int pre_height, pre_width;
+
+	CoordinatesQueue cQueue = new CoordinatesQueue();
+	cQueue.addFront(cur_height, cur_width);
+	while ((cur_height != 1) || (cur_width != 1)) {
+	    pre_height = blocks[cur_height][cur_width].pre_height;
+	    pre_width = blocks[cur_height][cur_width].pre_width;
+
+	    cQueue.addFront(pre_height, pre_width);
+
+	    cur_height = pre_height;
+	    cur_width = pre_width;
+	}
+
+	MovementSequence mQueue = cQueue.findMovements(navigator.getCurDirection());
+	return mQueue.outputMovements();
 
     }
 

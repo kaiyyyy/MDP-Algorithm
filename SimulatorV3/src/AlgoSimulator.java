@@ -390,7 +390,7 @@ public class AlgoSimulator {
 					for (int i = 19; i >= 0; i--) {
             			for (int j = 0; j < 15; j++) {
             				map.map[i][j] = BlockState.UNEXPLORED;
-            				if(map.grids[i][j].getBackground() == UNEXPLORED || map.grids[i][j].getBackground().equals(PATH) ||  map.grids[i][j].getBackground().equals(BOTBODY) ||  map.grids[i][j].getBackground().equals(BOTHEADCENTER)) 
+            				if(map.grids[i][j].getBackground() == UNEXPLORED || map.grids[i][j].getBackground() == Color.MAGENTA || map.grids[i][j].getBackground().equals(PATH) ||  map.grids[i][j].getBackground().equals(BOTBODY) ||  map.grids[i][j].getBackground().equals(BOTHEADCENTER)) 
             				{
 								map.grids[i][j].setBackground(UNEXPLORED);
 								map.grids[i][j].setBorder(BorderFactory.createLineBorder(BORDER, 1));
@@ -439,9 +439,11 @@ public class AlgoSimulator {
 			public void mousePressed(MouseEvent e) {
 				tExplore.stop();
 				System.out.println(navi.getHeight() + " " + navi.getWidth());
+				GlobalVariables.showMappingofPath = map;
+				GlobalVariables.shortestrun = 1;
 				ActionManager Sp = new ActionManager(map ,navi);
 				Sp.solveMaze();
-				
+				GlobalVariables.shortestrun = 0;
 			}
 		});
 		buttonPanel.add(shortestPathButton, c);

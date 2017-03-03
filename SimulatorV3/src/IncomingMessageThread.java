@@ -18,7 +18,11 @@ public class IncomingMessageThread implements Runnable {
     Thread t;
     Socket client;
     private boolean connectionStatus;
+    private boolean waiting = true;
+    private boolean startRun = false;
     Scanner scanner = null;
+    String temp = "";
+    AlgoSimulator lol = null;
     IncomingMessageThread(Socket client) {
             this.client = client;
             
@@ -30,13 +34,26 @@ public class IncomingMessageThread implements Runnable {
     public void run() {
         try {
             scanner = new Scanner(client.getInputStream());
-            while (true) {
-                if(scanner.nextLine().equals("start\n"))
-                {
-                	String[] args = null;
-					AlgoSimulator.main(args);
-                }
-            	System.out.println(client.getInetAddress()+" : " + scanner.nextLine());
+            while (waiting) {
+            	temp = scanner.nextLine();
+            	System.out.println(client.getInetAddress()+" : " + temp);
+            	
+            	if(temp.equals("explore"))
+            	{
+            		//start navigation
+            	}
+            	else if(temp.equals("shortest"))
+            	{
+            		//start shortest
+            	}
+            	else if(temp.equals("response"))
+            	{
+            		//resume Thread
+            	}
+            	else if(temp.equals("sensor"))
+            	{
+            		//update sensor
+            	}
             }
         } catch (IOException e) {
             System.out.println(e);
