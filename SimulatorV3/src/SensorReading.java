@@ -13,6 +13,21 @@ public class SensorReading {
 	private int right; // long range sensor, can take value -1, 1, 2, 3, 4, 5
 
 	/*
+	 * Data for position adjustment of the sensor (distance between sensors and
+	 * edge in each direction)
+	 */
+	private int frontAdjustment = 2;
+	private int leftAdjustment = 2;
+	private int rightAdjustment = 12;
+
+	/*
+	 * Data for position adjustment of robot (distance between the edge of the
+	 * robot and the nearest block)
+	 */
+	private int positionAdjustmentFront = 5;
+	private int positionAdjustmentLeft = 5;
+	private int positionAdjustmentRight = 5;
+	/*
 	 * Include arena and navigator to provide information
 	 */
 	private Navigator navigator;
@@ -44,9 +59,21 @@ public class SensorReading {
 	 * Function that update the sensor readings, currently based on simulation
 	 */
 	public void getSensorReadings() {
-		this.detectFront();
-		this.detectLeft();
-		this.detectRight();
+		String readings = GlobalVariables.sensorInput;
+		String[] readingStrings = readings.split(",");
+		double[] readingFront = new double[3];
+		double[] readingLeft = new double[2];
+		double readingRight;
+		for (int index = 0; index < 3; index++) {
+			readingFront[index] = Double.parseDouble(readingStrings[index]);
+		}
+		for (int index = 3; index < 5; index++) {
+			readingLeft[index - 3] = Double.parseDouble(readingStrings[index]);
+		}
+		readingRight = Double.parseDouble(readingStrings[5]);
+		this.sensorDetectFront(readingFront);
+		this.sensorDetectLeft(readingLeft);
+		this.sensorDetectRight(readingRight);
 	}
 
 	/*
@@ -131,6 +158,18 @@ public class SensorReading {
 		}
 	}
 
+	public void sensorDetectFront(double distances[]) {
+		for (int index = 0; index < 3; index++) {
+			double blockNum = (distances[index] - this.frontAdjustment - this.positionAdjustmentFront) / 10.0;
+			int blockInt = (int) (blockNum + 0.5);
+			if (blockInt > 3) {
+				this.front[index] = -1;
+			} else {
+				this.front[index] = blockInt;
+			}
+		}
+	}
+
 	public void detectLeft() {
 		int cur_height = this.navigator.getHeight();
 		int cur_width = this.navigator.getWidth();
@@ -184,6 +223,18 @@ public class SensorReading {
 						left[index] = -1;
 				}
 				break;
+			}
+		}
+	}
+
+	public void sensorDetectLeft(double distances[]) {
+		for (int index = 0; index < 2; index++) {
+			double blockNum = (double) (distances[index] - this.leftAdjustment - this.positionAdjustmentLeft) / 10.0;
+			int blockInt = (int) (blockNum + 0.5);
+			if (blockInt > 3) {
+				this.left[index] = -1;
+			} else {
+				this.left[index] = blockInt;
 			}
 		}
 	}
@@ -247,6 +298,16 @@ public class SensorReading {
 			if (!block_detected)
 				this.right = -1;
 			break;
+		}
+	}
+
+	public void sensorDetectRight(double distance) {
+		double blockNum = (double) (distance - this.rightAdjustment - this.positionAdjustmentRight) / 10.0;
+		int blockInt = (int) (blockNum + 0.5);
+		if (blockInt > 5) {
+			this.right = -1;
+		} else {
+			this.right = blockInt;
 		}
 	}
 }

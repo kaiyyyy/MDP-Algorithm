@@ -12,68 +12,70 @@
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class OutgoingMessageThread {
-    //Thread t;
-    Socket client;
-    //Scanner scanner;
-    PrintStream psWriter;
-    private String message;
-    boolean newMessage;
-    OutgoingMessageThread(Socket client) {
-        this.client = client;
-        //t = new Thread(this);
-        //t.start();
-        this.message = "";
-        this.newMessage = false;
-        
-    }
+	// Thread t;
+	Socket client;
+	// Scanner scanner;
+	PrintStream psWriter;
+	private String message;
+	boolean newMessage;
 
-    /*public void run() {
-        try {
-            //scanner = new Scanner(System.in);
-            psWriter = new PrintStream(client.getOutputStream());
-            
-            	if(this.newMessage == true)
-            	{
-	                if (this.message !=null)
-	                {
-	                	System.out.println(message);
-	                	psWriter.write(message.getBytes(),0,message.length());
-	                	this.newMessage = false;
-	                }
-            	}
-            
-        } catch (IOException e) {
-            System.out.println(e);
-            psWriter.close();
-        }
-    }*/
-    
-    public void sendThisMessage(String S){
-    	this.message = S;
-    	this.newMessage = true;
-    	//this.run();
-    	try {
-    		psWriter = new PrintStream(client.getOutputStream());
-        
-	    	if(this.newMessage == true)
-	    	{
-	            if (this.message !=null)
-	            {
-	            	System.out.println(message);
-	            	psWriter.write(message.getBytes(),0,message.length());
+	OutgoingMessageThread(Socket client) {
+		this.client = client;
+		// t = new Thread(this);
+		// t.start();
+		this.message = "";
+		this.newMessage = false;
 
-	            	this.newMessage = false;
-	            }
-	    	}
-    
+	}
+
+	/*
+	 * public void run() { try { //scanner = new Scanner(System.in); psWriter =
+	 * new PrintStream(client.getOutputStream());
+	 * 
+	 * if(this.newMessage == true) { if (this.message !=null) {
+	 * System.out.println(message);
+	 * psWriter.write(message.getBytes(),0,message.length()); this.newMessage =
+	 * false; } }
+	 * 
+	 * } catch (IOException e) { System.out.println(e); psWriter.close(); } }
+	 */
+
+	public void sendThisMessage(String S) {
+		this.message = S;
+		this.newMessage = true;
+		// this.run();
+		try {
+			psWriter = new PrintStream(client.getOutputStream());
+
+			if (this.newMessage == true) {
+				if (this.message != null) {
+					System.out.println(message);
+					psWriter.write(message.getBytes(), 0, message.length());
+
+					this.newMessage = false;
+				}
+			}
+
 		} catch (IOException e) {
-		    System.out.println(e);
-		    psWriter.close();
+			System.out.println(e);
+			psWriter.close();
 		}
-    }
-    
-    
+	}
+
+	public String sendMessageSequence(ProgressControl control, String[] results) throws InterruptedException {
+		int size = results.length;
+		String actions = "";
+		for (int index = 0; index < size; index++) {
+			actions = actions + results[index];
+			if (results[index].substring(0, 2).equals("mw")) {
+				control.requstOutgoing();
+				this.sendThisMessage(results[index]);
+			}
+		}
+		
+		return actions;
+	}
+
 }

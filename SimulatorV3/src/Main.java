@@ -1,21 +1,17 @@
+import java.awt.Color;
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 public class Main {
 
-    public static void main(String[] args) {
-	Arena arena = new Arena();
-	Navigator navigator = new Navigator();
-	ActionManager manager = new ActionManager(arena, navigator);
-	manager.navigate();
+	public static void main(String[] args)
+			throws InterruptedException, NumberFormatException, UnknownHostException, IOException {
 
-	System.out.println("Complete");
-
-	arena.printMap(navigator.getHeight(), navigator.getWidth());
-
-	/*
-	 * TRIGGER START HERE
-	 * 
-	 * 
-	 */
-    }
+		Arena arena = new Arena();
+		Navigator navigator = new Navigator();
+		ProgressControl control = new ProgressControl();
+		ActionManager manager = new ActionManager(arena, navigator);
+		manager.run();
+	}
 
 }

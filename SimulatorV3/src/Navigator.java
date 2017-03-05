@@ -65,6 +65,27 @@ public class Navigator {
 
 	}
 
+	public void move(int blockNum) {
+		switch (this.direction) {
+		case Direction.NORTH:
+			curHeight += blockNum;
+			setTopLeft();
+			break;
+		case Direction.SOUTH:
+			curHeight -= blockNum;
+			setTopLeft();
+			break;
+		case Direction.EAST:
+			curWidth += blockNum;
+			setTopLeft();
+			break;
+		case Direction.WEST:
+			curWidth -= blockNum;
+			setTopLeft();
+			break;
+		}
+	}
+
 	public void turnLeft() {
 		this.direction = (this.direction + 3) % 4;
 	}
@@ -78,13 +99,6 @@ public class Navigator {
 		this.topLeftWidth = this.curWidth - 1;
 	}
 
-	/*
-	 * public int getTopLeftHeight() { return 19 - this.topLeftHeight; }
-	 */
-
-	/*
-	 * public int getTopLeftWidth() { return 14 - this.topLeftWidth; }
-	 */
 
 	public void getSensorReadings() {
 	}

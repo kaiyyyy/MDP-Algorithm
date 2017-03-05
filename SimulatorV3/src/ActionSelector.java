@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Stack;
 
 /*
@@ -7,7 +9,10 @@ import java.util.Stack;
 public abstract class ActionSelector {
 	protected Arena arena;
 	protected Navigator navigator;
-	private SensorReading readings;
+	protected SensorReading readings;
+	protected ProgressControl control;
+	protected OutgoingMessageThread messageSendingThread;
+	protected IncomingMessageThread messageReceivingThread;
 	/*
 	 * Stack of way points that must be cleared
 	 */
@@ -18,7 +23,7 @@ public abstract class ActionSelector {
 	 * Abstract method to be implemented by each subclass This method will
 	 * return the string sent to other components
 	 */
-	public abstract String selectActions();
+	public abstract String selectActions() throws InterruptedException;
 
 	// cost of actions, to be modified based on real time taken to perform
 	// actions
@@ -26,10 +31,14 @@ public abstract class ActionSelector {
 	protected double turn_left_cost = 50;
 	protected double turn_right_cost = 50;
 
-	public ActionSelector(Arena arena, Navigator navigator) {
+	public ActionSelector(Arena arena, Navigator navigator, ProgressControl control, IncomingMessageThread in,
+			OutgoingMessageThread out)
+			throws NumberFormatException, UnknownHostException, InterruptedException, IOException {
 		this.arena = arena;
 		this.navigator = navigator;
 		this.readings = new SensorReading(navigator, arena);
+		this.messageReceivingThread = in;
+		this.messageSendingThread = out;
 	}
 
 	/*

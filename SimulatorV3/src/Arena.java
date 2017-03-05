@@ -184,10 +184,10 @@ public class Arena extends JPanel {
 	}
 
 	public void printMap(int height, int width) {
-		if (GlobalVariables.simulate == 1) {
+	
 			updateArena(height, width);
-		} else {
-			for (int row = 19; row >= 0; row--) {
+	
+			for (int row = 19; row >= 0; row--) 
 				for (int col = 0; col < 15; col++) {
 					if ((col <= width + 1) && (col >= width - 1) && (row >= height - 1) && (row <= height + 1)) {
 						System.out.print("n|");
@@ -206,8 +206,8 @@ public class Arena extends JPanel {
 					}
 				}
 				System.out.println();
-			}
-		}
+			
+		
 	}
 
 	/*
@@ -498,6 +498,32 @@ public class Arena extends JPanel {
 
 		while (S.length() % 8 != 0) {
 			S = S + "0";
+		}
+		S = toHex(S);
+		return S;
+	}
+
+	public String hexForAndroid1(int[][] D1Bin) {
+		String S = "";
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 15; j++) {
+				S = S + String.valueOf(D1Bin[i][j]);
+			}
+
+		}
+		S = toHex(S);
+		return S;
+	}
+
+	public String hexForAndroid2(int[][] D2Bin) {
+		String S = "";
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 15; j++) {
+				if (D2Bin[i][j] != 2) {
+					S = S + String.valueOf(D2Bin[i][j]);
+				}
+			}
+
 		}
 		S = toHex(S);
 		return S;

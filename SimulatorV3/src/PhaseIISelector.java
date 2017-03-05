@@ -1,11 +1,16 @@
+import java.io.IOException;
+import java.net.UnknownHostException;
+
 public class PhaseIISelector extends ActionSelector {
 	private int direction;
 	int target_height;
 	int target_width;
 	private int move_direction[][]; // 1 - up | 2 - down | 3 - left | 4 - right
 
-	public PhaseIISelector(Arena arena, Navigator navigator) {
-		super(arena, navigator);
+	public PhaseIISelector(Arena arena, Navigator navigator, ProgressControl control, IncomingMessageThread in,
+			OutgoingMessageThread out)
+			throws NumberFormatException, UnknownHostException, InterruptedException, IOException {
+		super(arena, navigator, control, in, out);
 		this.direction = Direction.NORTH;
 		this.target_height = 0;
 		this.target_width = 0;
@@ -137,11 +142,24 @@ public class PhaseIISelector extends ActionSelector {
 
 	// generate a queue of node to the unexplored points
 	@Override
-	public String selectActions() {
+	public String selectActions() throws InterruptedException {
 		CoordinatesQueue queue = this.findCoordiatesSequeunce();
 		MovementSequence mQueue = queue.findMovements(navigator.getCurDirection());
 
 		for (MovementNode m : mQueue.moveList) {
+			/*
+			 * Request for reading input before update. Current thread running
+			 * action selection process will be blocked until readings from
+			 * sensors come in
+			 */
+			try {
+				control.requestIncoming();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			super.readAndUpdate();
+
 			switch (m.getMovement()) {
 			case Movement.MOVE:
 				// super.navigator.showBot(arena, navigator);
@@ -189,19 +207,33 @@ public class PhaseIISelector extends ActionSelector {
 				}
 				break;
 			}
-			super.readAndUpdate();
 		}
-
-		String result = mQueue.outputMovements();
-		return result;
+		String[] results = mQueue.outputMovements();
+		this.messageReceivingThread.disableReading();
+		String actions = this.messageSendingThread.sendMessageSequence(control, results);
+		this.messageReceivingThread.enableReading();
+		return actions;
 	}
 
 	public void rotateAndDetect(int repetition) {
 		if (repetition == 0)
 			return;
 		else {
+
+			/*
+			 * Request for reading input before update. Current thread running
+			 * action selection process will be blocked until readings from
+			 * sensors come in
+			 */
+			try {
+				control.requestIncoming();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			super.readAndUpdate();
 			// super.navigator.showBot(arena, navigator);
+
 			navigator.turnRight();
 			if (GlobalVariables.simulate == 1) {
 				arena.printMap(navigator.getHeight(), navigator.getWidth());
@@ -218,14 +250,14 @@ public class PhaseIISelector extends ActionSelector {
 		}
 	}
 
-	public String returnToOrigin() {
+	public String returnToOrigin() throws InterruptedException {
 		this.target_height = 1;
 		this.target_width = 1;
 
 		return this.selectActions();
 	}
 
-	public String goToGoal() {
+	public String goToGoal() throws InterruptedException {
 		this.target_height = 18;
 		this.target_width = 13;
 

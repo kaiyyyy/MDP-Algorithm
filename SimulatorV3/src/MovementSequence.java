@@ -42,8 +42,9 @@ public class MovementSequence {
 		this.tail++;
 	}
 
-	public String outputMovements() {
-		String result = "";
+	public String[] outputMovements() {
+		int index = 0;
+		String[] result = new String[this.moveList.size()];
 		MovementNode move;
 		while (this.moveList.size() > 0) {
 			move = this.moveList.removeFirst();
@@ -62,13 +63,13 @@ public class MovementSequence {
 						}
 					}
 				}
-				result = result += "Move Forward " + moveDistance + " blocks ->";
+				result[index] = "mw" + (moveDistance * 10);
 				break;
 			case Movement.TURN_LEFT:
-				result = result + "Turn Left ->";
+				result[index] = "ma";
 				break;
 			case Movement.TURN_RIGHT:
-				result = result + "Turn right ->";
+				result[index] = "md";
 				break;
 			}
 		}
