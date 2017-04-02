@@ -25,5 +25,5 @@ public class GlobalVariables {
 			Thread.currentThread().stop();
 		}
 	}
-	
+
 }

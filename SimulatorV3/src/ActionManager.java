@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
@@ -6,7 +5,7 @@ import java.net.UnknownHostException;
  * Action manager manage the behavior of navigator on general
  * It executes the explore and find shortest path instruction from Android interface
  */
-public class ActionManager implements Runnable {
+public class ActionManager extends Thread {
 	private Arena arena;
 	private Navigator navigator;
 	private ProgressControl control;
@@ -17,7 +16,7 @@ public class ActionManager implements Runnable {
 			throws InterruptedException, NumberFormatException, UnknownHostException, IOException {
 		this.arena = arena;
 		this.navigator = navigator;
-		new RealTimeGridding(arena);
+		new RealTimeGridding(this.arena);
 		this.control = new ProgressControl();
 		Tcp_socket socket = new Tcp_socket();
 		this.out = new OutgoingMessageThread(Tcp_socket.client);
@@ -27,11 +26,14 @@ public class ActionManager implements Runnable {
 	public void run() {
 		try {
 			try {
+
+				this.control.requestProcess();
+				this.control.requstOutgoing();
 				this.out.sendThisMessage("start");
 
 				navigate();
 
-				this.control.requestShortestPath();
+				this.control.requestProcess();
 
 				this.solveMaze();
 
@@ -57,28 +59,33 @@ public class ActionManager implements Runnable {
 		flwselector.setTargets();
 
 		while (!flwselector.checkCommpletion()) {
+
+			//
 			String action = flwselector.selectActions();
 			System.out.println(action);
-
-			// send message to navigator to move
 		}
-
-		System.out.println("*******************PhaseIComplete*******************");
-
+		// temporary removed
 		this.phaseIINavigate();
+		//
+		// Message for Android
+		// this.out.sendThisMessage("a1f" +
+		// arena.getMapDescriptor1Hex(arena.getMapDescriptor1Binary()));
+		// Thread.sleep(GlobalVariables.outsleep);
+		// this.out.sendThisMessage("a2f" +
+		// arena.getMapDescriptor2Hex(arena.getMapDescriptor2Binary()));
+		// Thread.sleep(GlobalVariables.outsleep);
+
 	}
 
 	private void phaseIINavigate()
 			throws InterruptedException, NumberFormatException, UnknownHostException, IOException {
+
 		PhaseIISelector selector = new PhaseIISelector(this.arena, this.navigator, this.control, this.in, this.out);
 
 		while (selector.findNextTarget()) {
 			System.out.println(selector.selectActions());
 			selector.rotateAndDetect(4);
-			
-			
-			//YAMAN TAKE NOTE
-			//the next message is for Android
+			// Message for Android
 			this.out.sendThisMessage("a1" + arena.hexForAndroid1(arena.getMapDescriptor1Binary()));
 			Thread.sleep(GlobalVariables.outsleep);
 			this.out.sendThisMessage("a2" + arena.hexForAndroid2(arena.getMapDescriptor2Binary()));
@@ -90,15 +97,13 @@ public class ActionManager implements Runnable {
 
 		System.out.println(selector.returnToOrigin());
 		arena.printMap(navigator.getHeight(), navigator.getWidth());
-		
-		//YAMAN TAKE NOTE
-		//the next message is for Android
-		this.out.sendThisMessage("a1f" + arena.getMapDescriptor1Hex(arena.getMapDescriptor1Binary()));
-		Thread.sleep(GlobalVariables.outsleep);
-		this.out.sendThisMessage("a2f" + arena.getMapDescriptor2Hex(arena.getMapDescriptor2Binary()));
-		Thread.sleep(GlobalVariables.outsleep);
 
-		
+		// Message for Android
+		this.out.sendThisMessage("a1f" + arena.getMapDescriptor1Hex(arena.getMapDescriptor1Binary()));
+		Thread.sleep(150);
+		this.out.sendThisMessage("a2f" + arena.getMapDescriptor2Hex(arena.getMapDescriptor2Binary()));
+		Thread.sleep(150);
+
 		if (GlobalVariables.simulate == 1) {
 			Thread.currentThread().stop();
 		}
@@ -112,4 +117,5 @@ public class ActionManager implements Runnable {
 		SPSelector selector = new SPSelector(this.arena, this.navigator, this.control, this.in, this.out);
 		System.out.println(selector.selectActions());
 	}
+
 }

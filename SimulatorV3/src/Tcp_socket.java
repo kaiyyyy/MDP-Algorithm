@@ -19,7 +19,7 @@ public class Tcp_socket {
 	public boolean connected = false;
 
 	public Tcp_socket() throws InterruptedException, NumberFormatException, UnknownHostException, IOException {
-		String ipAddress = "172.21.147.246";
+		String ipAddress = "192.168.10.1";
 		String port = "5000";
 		System.out.println("sending connection request to IP : " + ipAddress + " PORT : " + port);
 

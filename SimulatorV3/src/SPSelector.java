@@ -160,13 +160,17 @@ public class SPSelector extends ActionSelector {
 			cQueue.addFront(pre_height, pre_width);
 
 			cur_height = pre_height;
-			cur_width = pre_width;
+			cur_width = pre_width;//
 		}
 
 		MovementSequence mQueue = cQueue.findMovements(navigator.getCurDirection());
 		String[] results = mQueue.outputMovements();
 
-		return this.messageSendingThread.sendMessageSequence(control, results);
+		String actions = this.messageSendingThread.sendMessageSequence(control, results);
+		this.control.requstOutgoing();
+		this.messageSendingThread.sendThisMessage(results[results.length - 1]);
+		actions = actions + results[results.length - 1];
+		return actions;
 	}
 
 }

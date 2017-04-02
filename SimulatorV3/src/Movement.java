@@ -5,4 +5,5 @@ public class Movement {
 	public static final int MOVE = 1;
 	public static final int TURN_LEFT = 2;
 	public static final int TURN_RIGHT = 3;
+	public static final int ALIGN = 4;
 }

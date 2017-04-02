@@ -44,7 +44,6 @@ public class FLWSelector extends ActionSelector {
 	@Override
 	public String selectActions() throws InterruptedException {
 		// get navigator information
-		int[] distances = super.getSensorReading();
 		int height = super.navigator.getHeight();
 		int width = super.navigator.getWidth();
 		int direction = super.navigator.getCurDirection();
@@ -54,6 +53,7 @@ public class FLWSelector extends ActionSelector {
 		 * action selection process will be blocked until readings from sensors
 		 * come in
 		 */
+		System.out.println("requesting incoming.");
 		try {
 			control.requestIncoming();
 		} catch (Exception e1) {
@@ -64,7 +64,78 @@ public class FLWSelector extends ActionSelector {
 		// update the map
 		super.readAndUpdate();
 
-		// print the map
+		// try align itself
+
+		if (super.tryAlignmentFront()) {
+			control.requstOutgoing();
+			this.messageSendingThread.sendThisMessage("ml");
+			this.control.requestIncoming();
+		}
+
+		/*
+		 * boolean test = super.readAndOverwrite();
+		 * 
+		 * 
+		 * //if apply, turn left and overwrite
+		 * 
+		 * if (test) { if (super.testLeftBottom()) { this.navigator.turnLeft();
+		 * 
+		 * control.requstOutgoing();
+		 * this.messageSendingThread.sendThisMessage("ma");
+		 * this.control.requestIncoming();
+		 * 
+		 * // align control.requstOutgoing();
+		 * this.messageSendingThread.sendThisMessage("ml");
+		 * this.control.requestIncoming(); super.readAndOverwrite();
+		 * 
+		 * this.navigator.turnRight(); // turn right control.requstOutgoing();
+		 * this.messageSendingThread.sendThisMessage("md");
+		 * this.control.requestIncoming();
+		 * 
+		 * } }
+		 * 
+		 * 
+		 * //If only got one block on the left lower position then turn left
+		 * //and update
+		 */
+
+		/*
+		 * if (super.tryAlignmentLeft()) { control.requstOutgoing();
+		 * this.messageSendingThread.sendThisMessage("ml1");
+		 * this.control.requestIncoming(); }
+		 */
+
+		/*
+		 * Replace left alignment with front alignment
+		 */
+
+		if (super.tryAlignmentLeft()) {
+
+			this.navigator.turnLeft();
+
+			if (super.tryAlignmentFront()) {
+				// turn left
+				control.requstOutgoing();
+				this.messageSendingThread.sendThisMessage("ma");
+				this.control.requestIncoming();
+
+				// align
+				control.requstOutgoing();
+				this.messageSendingThread.sendThisMessage("ml");
+				this.control.requestIncoming();
+
+				// turn right
+				control.requstOutgoing();
+				this.messageSendingThread.sendThisMessage("md");
+				this.control.requestIncoming();
+			}
+
+			this.navigator.turnRight();
+
+		}
+
+		// print the and update the real time
+
 		System.out.println();
 		arena.printMap(navigator.getHeight(), navigator.getWidth());
 
@@ -76,17 +147,15 @@ public class FLWSelector extends ActionSelector {
 			super.navigator.turnLeft();
 			this.control.requstOutgoing();
 			this.messageSendingThread.sendThisMessage("ma");
-			
 
-			//YAMAN TAKE NOTE
-			//the next message is for Android
+			// message for android
 			this.messageSendingThread.sendThisMessage("a1" + arena.hexForAndroid1(arena.getMapDescriptor1Binary()));
 			Thread.sleep(GlobalVariables.outsleep);
 			this.messageSendingThread.sendThisMessage("a2" + arena.hexForAndroid2(arena.getMapDescriptor2Binary()));
 			Thread.sleep(GlobalVariables.outsleep);
 			this.messageSendingThread.sendThisMessage("ar" + navigator.getHeight() + "," + navigator.getWidth());
 			Thread.sleep(GlobalVariables.outsleep);
-			
+
 			if (GlobalVariables.simulate == 1) {
 				GlobalVariables.earlyCompletion(arena, GlobalVariables.percentage);
 				try {
@@ -98,20 +167,23 @@ public class FLWSelector extends ActionSelector {
 				}
 			}
 
+			this.control.requestIncoming();
+			super.readAndUpdate();
+
 			// super.navigator.showBot(arena, navigator);
 			super.navigator.move();
 			this.control.requstOutgoing();
 			this.messageSendingThread.sendThisMessage("mw 10");
-			
-			//YAMAN TAKE NOTE
-			//the next message is for Android
+
+			// message for android
+			// the next message is for Android
 			this.messageSendingThread.sendThisMessage("a1" + arena.hexForAndroid1(arena.getMapDescriptor1Binary()));
 			Thread.sleep(GlobalVariables.outsleep);
 			this.messageSendingThread.sendThisMessage("a2" + arena.hexForAndroid2(arena.getMapDescriptor2Binary()));
 			Thread.sleep(GlobalVariables.outsleep);
 			this.messageSendingThread.sendThisMessage("ar" + navigator.getHeight() + "," + navigator.getWidth());
 			Thread.sleep(GlobalVariables.outsleep);
-			
+
 			if (GlobalVariables.simulate == 1) {
 				GlobalVariables.earlyCompletion(arena, GlobalVariables.percentage);
 				try {
@@ -144,17 +216,15 @@ public class FLWSelector extends ActionSelector {
 				}
 				this.control.requstOutgoing();
 				this.messageSendingThread.sendThisMessage("mw 10");
-				
-				//YAMAN TAKE NOTE
-				//the next message is for Android
+
+				// message for android
 				this.messageSendingThread.sendThisMessage("a1" + arena.hexForAndroid1(arena.getMapDescriptor1Binary()));
 				Thread.sleep(GlobalVariables.outsleep);
 				this.messageSendingThread.sendThisMessage("a2" + arena.hexForAndroid2(arena.getMapDescriptor2Binary()));
 				Thread.sleep(GlobalVariables.outsleep);
 				this.messageSendingThread.sendThisMessage("ar" + navigator.getHeight() + "," + navigator.getWidth());
 				Thread.sleep(GlobalVariables.outsleep);
-				
-				
+
 				return "mw 10";
 			} else {
 				// super.navigator.showBot(arena, navigator);
@@ -171,17 +241,15 @@ public class FLWSelector extends ActionSelector {
 				}
 				this.control.requstOutgoing();
 				this.messageSendingThread.sendThisMessage("md");
-				
-				//YAMAN TAKE NOTE
-				//the next message is for Android
+
+				// message for andriod
 				this.messageSendingThread.sendThisMessage("a1" + arena.hexForAndroid1(arena.getMapDescriptor1Binary()));
 				Thread.sleep(GlobalVariables.outsleep);
 				this.messageSendingThread.sendThisMessage("a2" + arena.hexForAndroid2(arena.getMapDescriptor2Binary()));
 				Thread.sleep(GlobalVariables.outsleep);
 				this.messageSendingThread.sendThisMessage("ar" + navigator.getHeight() + "," + navigator.getWidth());
 				Thread.sleep(GlobalVariables.outsleep);
-				
-				
+
 				return "md";
 			}
 		}

@@ -42,6 +42,14 @@ public class MovementSequence {
 		this.tail++;
 	}
 
+	// index is the index that the node is to be inserted at
+	// e.g. index = 0 then insert at the first node
+	public void addMovement(int movement, int index) {
+		MovementNode node = new MovementNode(movement);
+		this.moveList.add(index, node);
+		this.tail++;
+	}
+
 	public String[] outputMovements() {
 		int index = 0;
 		String[] result = new String[this.moveList.size()];
@@ -58,6 +66,7 @@ public class MovementSequence {
 						moveDistance++;
 						if (this.moveList.size() > 0) {
 							move = this.moveList.peek();
+							System.out.println("MOVING FORWARD!");
 						} else {
 							break;
 						}
@@ -71,9 +80,19 @@ public class MovementSequence {
 			case Movement.TURN_RIGHT:
 				result[index] = "md";
 				break;
+			case Movement.ALIGN:
+				result[index] = "ml";
+				break;
 			}
+			index++;
 		}
-		return result;
+
+		int size = index;
+		String[] reduced = new String[size];
+		for (int pos = 0; pos < index; pos++) {
+			reduced[pos] = result[pos];
+		}
+		return reduced;
 	}
 
 }

@@ -12,6 +12,7 @@
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class OutgoingMessageThread {
 	// Thread t;
@@ -52,7 +53,8 @@ public class OutgoingMessageThread {
 			if (this.newMessage == true) {
 				if (this.message != null) {
 					System.out.println(message);
-					psWriter.write(message.getBytes(), 0, message.length());
+					byte[] to_send = Arrays.copyOf(message.getBytes(), 256);
+					psWriter.write(to_send, 0, 256);
 
 					this.newMessage = false;
 				}
@@ -67,14 +69,13 @@ public class OutgoingMessageThread {
 	public String sendMessageSequence(ProgressControl control, String[] results) throws InterruptedException {
 		int size = results.length;
 		String actions = "";
-		for (int index = 0; index < size; index++) {
+		// send out strong of command one by one
+		for (int index = 0; index < size - 1; index++) {
 			actions = actions + results[index];
-			if (results[index].substring(0, 2).equals("mw")) {
-				control.requstOutgoing();
-				this.sendThisMessage(results[index]);
-			}
+			control.requstOutgoing();
+			this.sendThisMessage(results[index]);
 		}
-		
+
 		return actions;
 	}
 
