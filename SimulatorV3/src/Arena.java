@@ -29,6 +29,7 @@ public class Arena extends JPanel {
 	Gridding[][] grids = new Gridding[HEIGHT][WIDTH];
 
 	public int blocks[][];
+	public boolean mapConfirmed[][];
 	public int map[][];
 
 	/*
@@ -42,15 +43,21 @@ public class Arena extends JPanel {
 	private static int[] level2HeightAdjustment = { 3, 3, 3, 1, 0, -1, -3, -3, -3, -1, 0, 1 };
 	private static int[] level2WidthAdjustment = { -1, 0, 1, 3, 3, 3, 1, 0, -1, -3, -3, -3 };
 
-	private static int[] level3HeightAdjustment = { 4, 4, 4, 1, 0, -1, -4, -4, -4, -1, 0, 1 };
-	private static int[] level3WidthAdjustment = { -1, 0, 1, 4, 4, 4, 1, 0, -1, -4, -4, -4 };
+	// private static int[] level3HeightAdjustment = { 4, 4, 4, 1, 0, -1, -4,
+	// -4, -4, -1, 0, 1 };
+	// private static int[] level3WidthAdjustment = { -1, 0, 1, 4, 4, 4, 1, 0,
+	// -1, -4, -4, -4 };
 
 	/*
 	 * Initiate the arena
 	 */
 	public Arena() {
 		this.blocks = new int[20][15];
+		/*
+		 * MAP IS THE ACTUAL MAPPED OUT ONE !!!
+		 */
 		this.map = new int[20][15];
+		this.mapConfirmed = new boolean[20][15];
 		setLayout(new GridLayout(HEIGHT, WIDTH));
 		for (int i = HEIGHT - 1; i >= 0; i--) {
 			for (int j = 0; j < WIDTH; j++) {
@@ -67,6 +74,7 @@ public class Arena extends JPanel {
 		for (int height = 0; height < 20; height++) {
 			for (int width = 0; width < 15; width++) {
 				map[height][width] = BlockState.UNEXPLORED;
+				mapConfirmed[height][width] = false;
 			}
 		}
 
@@ -90,6 +98,26 @@ public class Arena extends JPanel {
 		map[17][14] = BlockState.REACHABLE;
 		map[17][13] = BlockState.REACHABLE;
 		map[17][12] = BlockState.REACHABLE;
+
+		mapConfirmed[0][0] = true;
+		mapConfirmed[0][1] = true;
+		mapConfirmed[0][2] = true;
+		mapConfirmed[1][0] = true;
+		mapConfirmed[1][1] = true;
+		mapConfirmed[1][2] = true;
+		mapConfirmed[2][0] = true;
+		mapConfirmed[2][1] = true;
+		mapConfirmed[2][2] = true;
+
+		mapConfirmed[19][14] = true;
+		mapConfirmed[19][13] = true;
+		mapConfirmed[19][12] = true;
+		mapConfirmed[18][14] = true;
+		mapConfirmed[18][13] = true;
+		mapConfirmed[18][12] = true;
+		mapConfirmed[17][14] = true;
+		mapConfirmed[17][13] = true;
+		mapConfirmed[17][12] = true;
 
 		// mannually inputed arena for testing purpose
 		int[][] s_arena = { // array
@@ -184,30 +212,29 @@ public class Arena extends JPanel {
 	}
 
 	public void printMap(int height, int width) {
-	
-			updateArena(height, width);
-	
-			for (int row = 19; row >= 0; row--) 
-				for (int col = 0; col < 15; col++) {
-					if ((col <= width + 1) && (col >= width - 1) && (row >= height - 1) && (row <= height + 1)) {
-						System.out.print("n|");
-					} else {
-						switch (map[row][col]) {
-						case BlockState.BLOCKED:
-							System.out.print("b ");
-							break;
-						case BlockState.REACHABLE:
-							System.out.print("r ");
-							break;
-						case BlockState.UNEXPLORED:
-							System.out.print("? ");
-							break;
-						}
+
+		updateArena(height, width);
+
+		for (int row = 19; row >= 0; row--)
+			for (int col = 0; col < 15; col++) {
+				if ((col <= width + 1) && (col >= width - 1) && (row >= height - 1) && (row <= height + 1)) {
+					System.out.print("n|");
+				} else {
+					switch (map[row][col]) {
+					case BlockState.BLOCKED:
+						System.out.print("b ");
+						break;
+					case BlockState.REACHABLE:
+						System.out.print("r ");
+						break;
+					case BlockState.UNEXPLORED:
+						System.out.print("? ");
+						break;
 					}
 				}
-				System.out.println();
-			
-		
+			}
+		System.out.println();
+
 	}
 
 	/*
@@ -267,26 +294,18 @@ public class Arena extends JPanel {
 						if (this.getState(height + Arena.level2HeightAdjustment[index],
 								width + Arena.level2WidthAdjustment[index]) == BlockState.UNEXPLORED)
 							return true;
-						else {
-							if ((this.getState(height + Arena.level2HeightAdjustment[index],
-									width + Arena.level2WidthAdjustment[index]) == BlockState.REACHABLE)
-									&& this.withinRange(height + Arena.level2HeightAdjustment[index],
-											width + Arena.level3WidthAdjustment[index])
-									&& (this.getState(height + Arena.level2HeightAdjustment[index],
-											width + Arena.level3WidthAdjustment[index]) == BlockState.UNEXPLORED))
-								return true;
-						}
 					}
 				}
 
 			}
 		}
-		return this.longRangeInDetection(height, width);
+		// return this.longRangeInDetection(height, width);
+		return false;
 	}
 
 	private boolean longRangeInDetection(int height, int width) {
 		// NORTH
-		for (int height_inc = 2; height_inc < 7; height_inc++) {
+		for (int height_inc = 2; height_inc < 5; height_inc++) {
 			if (this.withinRange(height + height_inc, width)
 					&& this.getState(height + height_inc, width) != BlockState.BLOCKED) {
 				if (this.getState(height + height_inc, width) == BlockState.UNEXPLORED) {
@@ -297,7 +316,7 @@ public class Arena extends JPanel {
 			}
 		}
 		// EAST
-		for (int width_inc = 2; width_inc < 7; width_inc++) {
+		for (int width_inc = 2; width_inc < 5; width_inc++) {
 			if (this.withinRange(height, width + width_inc)
 					&& this.getState(height, width + width_inc) != BlockState.BLOCKED) {
 				if (this.getState(height, width + width_inc) == BlockState.UNEXPLORED) {
@@ -309,7 +328,7 @@ public class Arena extends JPanel {
 		}
 
 		// SOUTH
-		for (int height_inc = 2; height_inc < 7; height_inc++) {
+		for (int height_inc = 2; height_inc < 5; height_inc++) {
 			if (this.withinRange(height - height_inc, width)
 					&& this.getState(height - height_inc, width) != BlockState.BLOCKED) {
 				if (this.getState(height - height_inc, width) == BlockState.UNEXPLORED) {
@@ -321,7 +340,7 @@ public class Arena extends JPanel {
 		}
 
 		// WEST
-		for (int width_inc = 2; width_inc < 7; width_inc++) {
+		for (int width_inc = 2; width_inc < 5; width_inc++) {
 			if (this.withinRange(height, width - width_inc)
 					&& this.getState(height, width - width_inc) != BlockState.BLOCKED) {
 				if (this.getState(height, width - width_inc) == BlockState.UNEXPLORED) {
@@ -380,7 +399,21 @@ public class Arena extends JPanel {
 	}
 
 	public void markState(int height, int width, int state) {
-		this.map[height][width] = state;
+		if (this.withinRange(height, width)) {
+			if (!this.mapConfirmed[height][width])
+				this.map[height][width] = state;
+		}
+	}
+
+	public void overwiteState(int height, int width, int state) {
+		if (this.withinRange(height, width)) {
+			this.map[height][width] = state;
+		}
+	}
+
+	public void confirmMap(int height, int width) {
+		if (this.withinRange(height, width))
+			this.mapConfirmed[height][width] = true;
 	}
 
 	// update when a block is newly marked as BLOCKED
@@ -477,7 +510,6 @@ public class Arena extends JPanel {
 				System.out.print(D2Bin[i][j]);
 
 			}
-
 			System.out.println();
 
 		}
@@ -512,6 +544,13 @@ public class Arena extends JPanel {
 
 		}
 		S = toHex(S);
+		String zeroPad = "";
+		if (S.length() != 75) {
+			for (int i = 0; i < (75 - S.length()); i++) {
+				zeroPad += "0";
+			}
+		}
+		S = zeroPad + S;
 		return S;
 	}
 
@@ -521,11 +560,20 @@ public class Arena extends JPanel {
 			for (int j = 0; j < 15; j++) {
 				if (D2Bin[i][j] != 2) {
 					S = S + String.valueOf(D2Bin[i][j]);
+				} else {
+					S = S + "0"; // like this?
 				}
 			}
 
 		}
 		S = toHex(S);
+		String zeroPad = "";
+		if (S.length() != 75) {
+			for (int i = 0; i < (75 - S.length()); i++) {
+				zeroPad += "0";
+			}
+		}
+		S = zeroPad + S;
 		return S;
 	}
 

@@ -4,6 +4,7 @@
 /AlgoSimulator$1.class
 /AlgoSimulator$2.class
 /AlgoSimulator$3.class
+/AlgoSimulator$4$1.class
 /AlgoSimulator$4.class
 /AlgoSimulator$5.class
 /AlgoSimulator$6.class
@@ -28,9 +29,8 @@
 /OutgoingMessageThread.class
 /PhaseIISelector.class
 /ProgressControl.class
+/RealTimeGridding.class
 /SPSelector.class
 /SensorReading.class
 /Tcp_socket.class
 /WayPoint.class
-/AlgoSimulator$4$1.class
-/RealTimeGridding.class

@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
@@ -12,6 +11,9 @@ public class Main {
 		ProgressControl control = new ProgressControl();
 		ActionManager manager = new ActionManager(arena, navigator);
 		manager.run();
+		manager.join();
+
+		System.out.println("All complete! Congratulations!");
 	}
 
 }

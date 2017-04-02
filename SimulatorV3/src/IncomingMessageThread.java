@@ -55,16 +55,17 @@ public class IncomingMessageThread implements Runnable {
 				System.out.println(client.getInetAddress() + " : " + temp);
 
 				if (temp.equals("explore")) {
-					// start navigation
-				} else if (temp.equals("shortest")) {
-					// start shortest
-				} else if (temp.substring(0, 1).equals("x")) {
-					// get reading
-
-					// resume Thread
+					this.control.signalProcess();
+				} else if (temp.equals("fastest")) {
+					this.control.signalProcess();
+				} else if (temp.substring(0, 1).equals("X")) {
 					int size = temp.length();
+					// readings implies that the robot has finished movement
+					control.singalOutgoing();
 					if (this.getReading) {
+						// get sensor readings
 						GlobalVariables.sensorInput = temp.substring(2, size);
+						// resume process
 						control.signalIncoming();
 					}
 				}

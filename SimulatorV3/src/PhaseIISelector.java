@@ -2,7 +2,6 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 
 public class PhaseIISelector extends ActionSelector {
-	private int direction;
 	int target_height;
 	int target_width;
 	private int move_direction[][]; // 1 - up | 2 - down | 3 - left | 4 - right
@@ -11,7 +10,6 @@ public class PhaseIISelector extends ActionSelector {
 			OutgoingMessageThread out)
 			throws NumberFormatException, UnknownHostException, InterruptedException, IOException {
 		super(arena, navigator, control, in, out);
-		this.direction = Direction.NORTH;
 		this.target_height = 0;
 		this.target_width = 0;
 		this.move_direction = new int[20][15];
@@ -146,24 +144,25 @@ public class PhaseIISelector extends ActionSelector {
 		CoordinatesQueue queue = this.findCoordiatesSequeunce();
 		MovementSequence mQueue = queue.findMovements(navigator.getCurDirection());
 
+		String actions = "";
+
 		for (MovementNode m : mQueue.moveList) {
 			/*
 			 * Request for reading input before update. Current thread running
 			 * action selection process will be blocked until readings from
 			 * sensors come in
 			 */
-			try {
-				control.requestIncoming();
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			super.readAndUpdate();
-
 			switch (m.getMovement()) {
 			case Movement.MOVE:
 				// super.navigator.showBot(arena, navigator);
 				navigator.move();
+
+				this.control.requstOutgoing();
+				this.messageSendingThread.sendThisMessage("mw 10");
+				this.control.requestIncoming();
+				super.readAndUpdate();
+
+				arena.printMap(navigator.getHeight(), navigator.getWidth());
 				if (GlobalVariables.simulate == 1) {
 					arena.printMap(navigator.getHeight(), navigator.getWidth());
 
@@ -175,10 +174,19 @@ public class PhaseIISelector extends ActionSelector {
 						e.printStackTrace();
 					}
 				}
+
+				actions = actions + "mw 10";
 				break;
 			case Movement.TURN_LEFT:
 				// super.navigator.showBot(arena, navigator);
 				navigator.turnLeft();
+
+				this.control.requstOutgoing();
+				this.messageSendingThread.sendThisMessage("ma");
+				this.control.requestIncoming();
+				super.readAndUpdate();
+
+				arena.printMap(navigator.getHeight(), navigator.getWidth());
 				if (GlobalVariables.simulate == 1) {
 					arena.printMap(navigator.getHeight(), navigator.getWidth());
 
@@ -190,10 +198,20 @@ public class PhaseIISelector extends ActionSelector {
 						e.printStackTrace();
 					}
 				}
+
+				actions = actions + "ma";
+
 				break;
 			case Movement.TURN_RIGHT:
 				// super.navigator.showBot(arena, navigator);
 				navigator.turnRight();
+
+				this.control.requstOutgoing();
+				this.messageSendingThread.sendThisMessage("md");
+				this.control.requestIncoming();
+				super.readAndUpdate();
+
+				arena.printMap(navigator.getHeight(), navigator.getWidth());
 				if (GlobalVariables.simulate == 1) {
 					arena.printMap(navigator.getHeight(), navigator.getWidth());
 
@@ -205,17 +223,50 @@ public class PhaseIISelector extends ActionSelector {
 						e.printStackTrace();
 					}
 				}
+
+				actions = actions + "md";
 				break;
 			}
+
+			// try align itself
+
+			if (super.tryAlignmentFront()) {
+				control.requstOutgoing();
+				this.messageSendingThread.sendThisMessage("ml");
+				this.control.requestIncoming();
+			}
+
+			// try align left
+			if (super.tryAlignmentLeft()) {
+
+				this.navigator.turnLeft();
+
+				if (super.tryAlignmentFront()) {
+					// turn left
+					control.requstOutgoing();
+					this.messageSendingThread.sendThisMessage("ma");
+					this.control.requestIncoming();
+
+					// align
+					control.requstOutgoing();
+					this.messageSendingThread.sendThisMessage("ml");
+					this.control.requestIncoming();
+
+					// turn right
+					control.requstOutgoing();
+					this.messageSendingThread.sendThisMessage("md");
+					this.control.requestIncoming();
+				}
+
+				this.navigator.turnRight();
+
+			}
 		}
-		String[] results = mQueue.outputMovements();
-		this.messageReceivingThread.disableReading();
-		String actions = this.messageSendingThread.sendMessageSequence(control, results);
-		this.messageReceivingThread.enableReading();
+
 		return actions;
 	}
 
-	public void rotateAndDetect(int repetition) {
+	public void rotateAndDetect(int repetition) throws InterruptedException {
 		if (repetition == 0)
 			return;
 		else {
@@ -225,16 +276,10 @@ public class PhaseIISelector extends ActionSelector {
 			 * action selection process will be blocked until readings from
 			 * sensors come in
 			 */
-			try {
-				control.requestIncoming();
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			super.readAndUpdate();
-			// super.navigator.showBot(arena, navigator);
 
 			navigator.turnRight();
+
+			arena.printMap(navigator.getHeight(), navigator.getWidth());
 			if (GlobalVariables.simulate == 1) {
 				arena.printMap(navigator.getHeight(), navigator.getWidth());
 
@@ -246,6 +291,26 @@ public class PhaseIISelector extends ActionSelector {
 					e.printStackTrace();
 				}
 			}
+
+			// update the map
+			try {
+				this.control.requstOutgoing();
+				this.messageSendingThread.sendThisMessage("md");
+				control.requestIncoming();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			super.readAndUpdate();
+			// super.navigator.showBot(arena, navigator)
+
+			// try align it self when rotating
+			if (super.tryAlignmentFront()) {
+				control.requstOutgoing();
+				this.messageSendingThread.sendThisMessage("ml");
+				this.control.requestIncoming();
+			}
+
 			rotateAndDetect(repetition - 1);
 		}
 	}
@@ -254,7 +319,53 @@ public class PhaseIISelector extends ActionSelector {
 		this.target_height = 1;
 		this.target_width = 1;
 
-		return this.selectActions();
+		String actions = this.selectActions();
+
+		while (this.navigator.getCurDirection() != Direction.NORTH) {
+			this.navigator.turnLeft();
+			this.control.requstOutgoing();
+			this.messageSendingThread.sendThisMessage("ma");
+			this.control.requestIncoming();
+			actions = actions + "ma";
+
+			/*
+			 * Align it self when turning
+			 */
+			if (super.tryAlignmentFront()) {
+				control.requstOutgoing();
+				this.messageSendingThread.sendThisMessage("ml");
+				this.control.requestIncoming();
+			}
+			
+			/* Align left if possible
+			 *
+			 */ 
+
+			this.navigator.turnRight();
+
+			if (super.tryAlignmentFront()) {
+				// turn left
+				control.requstOutgoing();
+				this.messageSendingThread.sendThisMessage("md");
+				this.control.requestIncoming();
+
+				// align
+				control.requstOutgoing();
+				this.messageSendingThread.sendThisMessage("ml");
+				this.control.requestIncoming();
+
+				// turn right
+				control.requstOutgoing();
+				this.messageSendingThread.sendThisMessage("ma");
+				this.control.requestIncoming();
+			}
+
+			this.navigator.turnLeft();
+
+			actions = actions + "ml";
+		}
+
+		return actions;
 	}
 
 	public String goToGoal() throws InterruptedException {

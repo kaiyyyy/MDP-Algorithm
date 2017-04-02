@@ -11,14 +11,20 @@ public class SensorReading {
 	private int[] front; // can take value -1, 1 or 2
 	private int[] left; // can take value -1, 1 or 2
 	private int right; // long range sensor, can take value -1, 1, 2, 3, 4, 5
+	/*
+	 * Readings of sensors in double format
+	 */
+	private double[] frontDouble;
+	private double[] leftDouble;
+	private double rightDouble;
 
 	/*
 	 * Data for position adjustment of the sensor (distance between sensors and
 	 * edge in each direction)
 	 */
-	private int frontAdjustment = 2;
-	private int leftAdjustment = 2;
-	private int rightAdjustment = 12;
+	private double[] adjustmentToEdgeFront = { 5.5, 2.5, 5.5 };
+	private double[] adjustmentToEdgeLeft = { 5, 3 };
+	private double adjustmetToEdgeRight = 11;
 
 	/*
 	 * Data for position adjustment of robot (distance between the edge of the
@@ -27,6 +33,19 @@ public class SensorReading {
 	private int positionAdjustmentFront = 5;
 	private int positionAdjustmentLeft = 5;
 	private int positionAdjustmentRight = 5;
+	/*
+	 * Limits for sensor updates
+	 */
+	private int sensorLimitFront = 2;
+	private int sensorLimitLeft = 2;
+	private int sensorLimitRight = 3;
+	/*
+	 * Distance limit for alignment
+	 */
+	private double leftAlignmentUpLimit = 10.0;
+	private double leftAlignmentLowerLimit = 5.0;
+	private double frontAlignmentUpLimit = 10.0;
+	private double frontAlignmentLowerLimit = 5.0;
 	/*
 	 * Include arena and navigator to provide information
 	 */
@@ -71,6 +90,11 @@ public class SensorReading {
 			readingLeft[index - 3] = Double.parseDouble(readingStrings[index]);
 		}
 		readingRight = Double.parseDouble(readingStrings[5]);
+
+		this.frontDouble = readingFront;
+		this.leftDouble = readingLeft;
+		this.rightDouble = readingRight;
+
 		this.sensorDetectFront(readingFront);
 		this.sensorDetectLeft(readingLeft);
 		this.sensorDetectRight(readingRight);
@@ -160,9 +184,10 @@ public class SensorReading {
 
 	public void sensorDetectFront(double distances[]) {
 		for (int index = 0; index < 3; index++) {
-			double blockNum = (distances[index] - this.frontAdjustment - this.positionAdjustmentFront) / 10.0;
+			double blockNum = (distances[index] - this.adjustmentToEdgeFront[index] - this.positionAdjustmentFront)
+					/ 10.0 + 1;
 			int blockInt = (int) (blockNum + 0.5);
-			if (blockInt > 3) {
+			if (blockInt > this.sensorLimitFront || blockInt < 1) {
 				this.front[index] = -1;
 			} else {
 				this.front[index] = blockInt;
@@ -229,9 +254,10 @@ public class SensorReading {
 
 	public void sensorDetectLeft(double distances[]) {
 		for (int index = 0; index < 2; index++) {
-			double blockNum = (double) (distances[index] - this.leftAdjustment - this.positionAdjustmentLeft) / 10.0;
+			double blockNum = (distances[index] - this.adjustmentToEdgeLeft[index] - this.positionAdjustmentLeft) / 10.0
+					+ 1;
 			int blockInt = (int) (blockNum + 0.5);
-			if (blockInt > 3) {
+			if (blockInt > this.sensorLimitLeft || blockInt < 1) {
 				this.left[index] = -1;
 			} else {
 				this.left[index] = blockInt;
@@ -248,7 +274,7 @@ public class SensorReading {
 		switch (direction) {
 		case Direction.NORTH:
 			block_detected = false;
-			for (int distance = 1; distance < 6; distance++) {
+			for (int distance = 1; distance < 5; distance++) {
 				if (!arena.withinRange(cur_height, cur_width + 1 + distance)
 						|| (this.arena.sensorGetState(cur_height, cur_width + 1 + distance) == BlockState.BLOCKED)) {
 					block_detected = true;
@@ -261,7 +287,7 @@ public class SensorReading {
 			break;
 		case Direction.SOUTH:
 			block_detected = false;
-			for (int distance = 1; distance < 6; distance++) {
+			for (int distance = 1; distance < 5; distance++) {
 				if (!arena.withinRange(cur_height, cur_width - 1 - distance)
 						|| (this.arena.sensorGetState(cur_height, cur_width - 1 - distance) == BlockState.BLOCKED)) {
 					block_detected = true;
@@ -274,7 +300,7 @@ public class SensorReading {
 			break;
 		case Direction.WEST:
 			block_detected = false;
-			for (int distance = 1; distance < 6; distance++) {
+			for (int distance = 1; distance < 5; distance++) {
 				if (!arena.withinRange(cur_height + 1 + distance, cur_width)
 						|| (this.arena.sensorGetState(cur_height + 1 + distance, cur_width) == BlockState.BLOCKED)) {
 					block_detected = true;
@@ -287,7 +313,7 @@ public class SensorReading {
 			break;
 		case Direction.EAST:
 			block_detected = false;
-			for (int distance = 1; distance < 6; distance++) {
+			for (int distance = 1; distance < 5; distance++) {
 				if (!arena.withinRange(cur_height - 1 - distance, cur_width)
 						|| (this.arena.sensorGetState(cur_height - 1 - distance, cur_width) == BlockState.BLOCKED)) {
 					block_detected = true;
@@ -302,12 +328,28 @@ public class SensorReading {
 	}
 
 	public void sensorDetectRight(double distance) {
-		double blockNum = (double) (distance - this.rightAdjustment - this.positionAdjustmentRight) / 10.0;
-		int blockInt = (int) (blockNum + 0.5);
-		if (blockInt > 5) {
+		double blockNum = (distance - this.adjustmetToEdgeRight - this.positionAdjustmentRight) / 10.0 + 1;
+		int blockInt = (int) (blockNum + .2); // removed + .5
+		if (blockInt > this.sensorLimitRight || blockInt < 1) {
 			this.right = -1;
 		} else {
 			this.right = blockInt;
 		}
 	}
+
+	/*
+	 * Check the distances for alignment
+	 */
+	public boolean alignmentCheckLeft() {
+		double distance1 = this.leftDouble[0] - this.adjustmentToEdgeLeft[0];
+		double distance2 = this.leftDouble[1] - this.adjustmentToEdgeLeft[1];
+		if (Math.abs(distance1 - distance2) > 0.45)
+			return true;
+		if (this.leftDouble[0] >= 11.8 || this.leftDouble[0] <= 9.75)
+			return true;
+		if (this.leftDouble[1] >= 10.6 || this.leftDouble[1] <= 8)
+			return true;
+		return false;
+	}
+
 }
