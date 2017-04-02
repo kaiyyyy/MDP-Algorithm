@@ -12,6 +12,10 @@ public class GlobalVariables {
 	public static int pauseExplore = 0;
 	public static String sensorInput;
 	public static int outsleep = 50;
+	public static long delayMeasure = 0;
+	public static long lastSend = 0;
+	public static long thisSend = 0;
+	public static boolean first = true;
 
 	public static void earlyCompletion(Arena map, double percentage) {
 		int num = 0;

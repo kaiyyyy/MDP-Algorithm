@@ -56,7 +56,8 @@ public class IncomingMessageThread implements Runnable {
 
 				if (temp.equals("explore")) {
 					this.control.signalProcess();
-				} else if (temp.equals("fastest")) {
+				}
+				else if (temp.equals("fastest")) {
 					this.control.signalProcess();
 				} else if (temp.substring(0, 1).equals("X")) {
 					int size = temp.length();

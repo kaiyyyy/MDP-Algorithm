@@ -72,13 +72,13 @@ public class MovementSequence {
 						}
 					}
 				}
-				result[index] = "mw" + (moveDistance * 10);
+				result[index] = "mt" + (moveDistance * 10);
 				break;
 			case Movement.TURN_LEFT:
-				result[index] = "ma";
+				result[index] = "mf";
 				break;
 			case Movement.TURN_RIGHT:
-				result[index] = "md";
+				result[index] = "mh";
 				break;
 			case Movement.ALIGN:
 				result[index] = "ml";

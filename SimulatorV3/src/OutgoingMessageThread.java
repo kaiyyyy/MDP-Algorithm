@@ -64,6 +64,7 @@ public class OutgoingMessageThread {
 			System.out.println(e);
 			psWriter.close();
 		}
+		
 	}
 
 	public String sendMessageSequence(ProgressControl control, String[] results) throws InterruptedException {
