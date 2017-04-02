@@ -48,7 +48,7 @@ public class ActionManager extends Thread {
 				e.printStackTrace();
 			}
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block type sonething ;alallaalala
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -82,18 +82,18 @@ public class ActionManager extends Thread {
 
 		PhaseIISelector selector = new PhaseIISelector(this.arena, this.navigator, this.control, this.in, this.out);
 
-//		while (false) {
-//			System.out.println(selector.selectActions());
-//			selector.rotateAndDetect(4);
-//			// Message for Android
-//			this.out.sendThisMessage("a1" + arena.hexForAndroid1(arena.getMapDescriptor1Binary()));
-//			Thread.sleep(GlobalVariables.outsleep);
-//			this.out.sendThisMessage("a2" + arena.hexForAndroid2(arena.getMapDescriptor2Binary()));
-//			Thread.sleep(GlobalVariables.outsleep);
-//			this.out.sendThisMessage("ar" + navigator.getHeight() + "," + navigator.getWidth());
-//			Thread.sleep(GlobalVariables.outsleep);
-//			arena.printMap(navigator.getHeight(), navigator.getWidth());
-//		}
+		while (selector.findNextTarget()) {
+			System.out.println(selector.selectActions());
+			selector.rotateAndDetect(4);
+			// Message for Android
+			this.out.sendThisMessage("a1" + arena.hexForAndroid1(arena.getMapDescriptor1Binary()));
+			Thread.sleep(GlobalVariables.outsleep);
+			this.out.sendThisMessage("a2" + arena.hexForAndroid2(arena.getMapDescriptor2Binary()));
+			Thread.sleep(GlobalVariables.outsleep);
+			this.out.sendThisMessage("ar" + navigator.getHeight() + "," + navigator.getWidth());
+			Thread.sleep(GlobalVariables.outsleep);
+			arena.printMap(navigator.getHeight(), navigator.getWidth());
+		}
 
 		System.out.println(selector.returnToOrigin());
 		arena.printMap(navigator.getHeight(), navigator.getWidth());

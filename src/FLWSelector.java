@@ -174,7 +174,7 @@ public class FLWSelector extends ActionSelector {
 			super.navigator.move();
 			this.control.requstOutgoing();
 			this.messageSendingThread.sendThisMessage("mw 10");
-			
+
 			// message for android
 			// the next message is for Android
 			this.messageSendingThread.sendThisMessage("a1" + arena.hexForAndroid1(arena.getMapDescriptor1Binary()));
@@ -216,11 +216,6 @@ public class FLWSelector extends ActionSelector {
 				}
 				this.control.requstOutgoing();
 				this.messageSendingThread.sendThisMessage("mw 10");
-				
-				//if(S.charAt(0) == 'm'){
-				System.out.println("delay :" + Long.toString(System.currentTimeMillis() - GlobalVariables.delayMeasure));
-				GlobalVariables.delayMeasure = System.currentTimeMillis();
-			//}
 
 				// message for android
 				this.messageSendingThread.sendThisMessage("a1" + arena.hexForAndroid1(arena.getMapDescriptor1Binary()));

@@ -287,6 +287,16 @@ public class Arena extends JPanel {
 						width + Arena.widthAdjustment[index]) == BlockState.UNEXPLORED) {
 					return true;
 				}
+				if (this.getState(height + Arena.heightAdjustment[index],
+						width + Arena.widthAdjustment[index]) == BlockState.REACHABLE) {
+					if (this.withinRange(height + Arena.level2HeightAdjustment[index],
+							width + Arena.level2WidthAdjustment[index])) {
+						if (this.getState(height + Arena.level2HeightAdjustment[index],
+								width + Arena.level2WidthAdjustment[index]) == BlockState.UNEXPLORED)
+							return true;
+					}
+				}
+
 			}
 		}
 		// return this.longRangeInDetection(height, width);

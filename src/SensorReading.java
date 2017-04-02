@@ -23,7 +23,7 @@ public class SensorReading {
 	 * edge in each direction)
 	 */
 	private double[] adjustmentToEdgeFront = { 5.5, 2.5, 5.5 };
-	private double[] adjustmentToEdgeLeft = { 5.4, 3.5 };
+	private double[] adjustmentToEdgeLeft = { 5, 3 };
 	private double adjustmetToEdgeRight = 11;
 
 	/*
@@ -333,7 +333,7 @@ public class SensorReading {
 		if (blockInt > this.sensorLimitRight || blockInt < 1) {
 			this.right = -1;
 		} else {
-			this.right = blockInt; 	
+			this.right = blockInt;
 		}
 	}
 
@@ -343,7 +343,7 @@ public class SensorReading {
 	public boolean alignmentCheckLeft() {
 		double distance1 = this.leftDouble[0] - this.adjustmentToEdgeLeft[0];
 		double distance2 = this.leftDouble[1] - this.adjustmentToEdgeLeft[1];
-		if (Math.abs(distance1 - distance2) > 0.5)
+		if (Math.abs(distance1 - distance2) > 0.45)
 			return true;
 		if (this.leftDouble[0] >= 11.8 || this.leftDouble[0] <= 9.75)
 			return true;
