@@ -1,7 +1,7 @@
 # MDP-Algorithm
 <i>Disclaimer - This repository was submitted as part of the CZ3004 - Multidisciplinary Project course at Nanyang Technological University and is no longer maintained.</i>
 
-This repository contains code to achieve autonomous exploration of a 2D maze using a robot. Following an exploration phase, the robot is capable of going from a predefined start zone to an end zone in the shortest possible path. The code uses a left wall hugging algorithm to explore the maze and uses the Djikstra's greedy algorithm. The repository contains two branches. The master branch can be used to run the algorithm in a live set up. The simulator branch can be used to run the simulation.
+This repository contains code to achieve autonomous exploration of a 2D maze using a robot. Following an exploration phase, the robot is capable of going from a predefined start zone to an end zone in the shortest possible path. The code uses a left wall hugging algorithm to explore the maze and uses the Djikstra's greedy algorithm to solve the shortest path problem. The repository contains two branches. The master branch can be used to run the algorithm in a live set up. The simulator branch can be used to run the simulation.
 
 ## Screenshots 
 
@@ -25,7 +25,7 @@ This repository contains code to achieve autonomous exploration of a 2D maze usi
 2. Import this project into Eclipse.
 
 # Running the Code
-The code can run from the Eclipse IDE.
+To run the simulation, run the AlgoSimulator.java file. To run on a real robot, run the Main.java file.
 
 # Contributors
 1. [kaiyyyy](https://github.com/kaiyyyy)
