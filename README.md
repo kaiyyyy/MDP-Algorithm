@@ -25,7 +25,7 @@ This repository contains code to achieve autonomous exploration of a 2D maze usi
 2. Import this project into Eclipse.
 
 # Running the Code
-The code can be run using the Eclipse IDE.
+The code can run from the Eclipse IDE.
 
 # Contributors
 1. [kaiyyyy](https://github.com/kaiyyyy)
