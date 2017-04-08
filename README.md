@@ -5,15 +5,20 @@ This repository contains code to achieve autonomous exploration of a 2D maze usi
 
 ## Screenshots 
 
-![A sample maze](Screenshots/StartMaze.png)
+#### A sample maze
+<img src="Screenshots/StartMaze.png" />
 
-![Initial Phase](Screenshots/InitialPhase.png)
+#### Initial Phase
+<img src="Screenshots/InitialPhase.png" />
 
-![Robot Reached the Goal Zone](Screenshots/GoalZone.png)
+#### Robot Reached the Goal Zone
+<img src="Screenshots/GoalZone.png" />
 
-![Exploration Completed](Screenshots/Explored.png)
+#### Exploration Completed
+<img src="Screenshots/Explored.png" />
 
-![Shortest Path](Screenshots/ShortestPath.png)
+#### Shortest Path
+<img src="Screenshots/ShortestPath.png" />
 
 # Setup
 1. Download the [Eclipse IDE](https://eclipse.org/ide/)
@@ -25,4 +30,3 @@ The code can be run using the Eclipse IDE.
 # Contributors
 1. [kaiyyyy](https://github.com/kaiyyyy)
 2. [luyaman](https://github.com/luyaman)
-
